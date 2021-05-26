@@ -11,7 +11,7 @@ namespace App.Controllers
 
         //Action metod..
         
-        [HttpGet()]
+        [HttpGet()] 
         public IActionResult Index()
         {
             return View("Index");       
