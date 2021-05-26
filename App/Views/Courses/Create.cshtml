@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Lägg till nya kurser";
+}
+
+@model App.ViewModels.CourseViewModel
+
+
+@*STEG 2. Skapa en inmatningssida*@
+<h1>Här lägger vi till nya kurser</h1>
+
+@Html.ValidationSummary()
+
+@*Steg 4. SKAPA ETT FORMULÄR*@
+<form asp-controller="Courses" asp-action="Create" method="POST">
+    <div class="card">
+        <div class="card-header">
+            <h4>Lägg till en ny kurs</h4>
+        </div>
+        <div class="card-body p-3">
+            <div class="mb-3">
+                <label class="form-label" asp-for="CourseNumber"></label>
+                <input class="form-control" asp-for="CourseNumber">
+                <span asp-validation-for="CourseNumber"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="CourseTitle"></label>
+                <input class="form-control" asp-for="CourseTitle">
+                <span asp-validation-for="CourseTitle"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="CourseDescription"></label>
+                <input class="form-control" asp-for="CourseDescription">
+                <span asp-validation-for="CourseDescription"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="CourseLength"></label>
+                <input class="form-control" asp-for="CourseLength">
+                <span asp-validation-for="CourseLength"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="CourseComplexity"></label>
+                <input class="form-control" asp-for="CourseComplexity">
+                <span asp-validation-for="CourseComplexity"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="CourseStatus"></label>
+                <input class="form-control" asp-for="CourseStatus">
+                <span asp-validation-for="CourseStatus"></span>
+            </div>
+            <button id="save"type="submit" class="btn btn-primary">Lägg till kurs</button>
+        </div>
+    </div>
+</form>
