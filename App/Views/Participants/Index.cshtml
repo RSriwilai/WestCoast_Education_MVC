@@ -1,3 +1,5 @@
+@model IEnumerable<App.Entities.Participant>
+
 @{
     ViewData["Title"] = "Deltagare";
 }
@@ -19,6 +21,18 @@
         </tr>
     </thead>
     <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="text-align:center;"><a asp-action="" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Ändra</a></td>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.EmailAddress</td>
+                <td>@item.PhoneNumber</td>
+                <td>@item.Address</td>
+                <th style="text-align: center;"><a asp-action="" asp-route-regNo="@item.FirstName"><i class="fas fa-info-circle">i</i></a></th>
+            </tr>
+        }
     </tbody>
   </table>
 

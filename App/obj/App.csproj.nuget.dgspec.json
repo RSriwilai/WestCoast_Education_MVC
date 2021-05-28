@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Backend\\westcoast_education_mvc_app\\App\\App.csproj": {}
+    "C:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Programming\\Learn Backend\\WestCoast_Education_MVC_App\\App\\App.csproj": {}
   },
   "projects": {
-    "C:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Backend\\westcoast_education_mvc_app\\App\\App.csproj": {
+    "C:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Programming\\Learn Backend\\WestCoast_Education_MVC_App\\App\\App.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Backend\\westcoast_education_mvc_app\\App\\App.csproj",
+        "projectUniqueName": "C:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Programming\\Learn Backend\\WestCoast_Education_MVC_App\\App\\App.csproj",
         "projectName": "App",
-        "projectPath": "C:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Backend\\westcoast_education_mvc_app\\App\\App.csproj",
+        "projectPath": "C:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Programming\\Learn Backend\\WestCoast_Education_MVC_App\\App\\App.csproj",
         "packagesPath": "C:\\Users\\duk15\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Backend\\westcoast_education_mvc_app\\App\\obj\\",
+        "outputPath": "C:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Programming\\Learn Backend\\WestCoast_Education_MVC_App\\App\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\duk15\\AppData\\Roaming\\NuGet\\NuGet.Config",
