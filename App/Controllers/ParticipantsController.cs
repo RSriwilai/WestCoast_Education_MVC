@@ -26,23 +26,64 @@ namespace App.Controllers
 
         public IActionResult Create()
         {
-            return View("create");
+            var model = new ParticipantViewModel();
+            return View("Create", model);
         }
 
         [HttpPost()]
         public async Task<IActionResult> Create(ParticipantViewModel data)
         {
+            if(!ModelState.IsValid) return View("Create", data);
 
             var participant = new Participant {
                 FirstName = data.FirstName,
                 LastName = data.LastName,
                 EmailAddress = data.EmailAddress,
-                PhoneNumber = data.PhoneNumber,
+                PhoneNumber = (int)data.PhoneNumber,
                 Address = data.Address
             };
             _context.Participants.Add(participant);
             var result = await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+
+        [HttpGet()]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var participant = await _context.Participants.FindAsync(id);
+                var model = new EditParticipantViewModel{
+                Id = participant.Id,
+                FirstName = participant.FirstName,
+                LastName = participant.LastName,
+                EmailAddress = participant.EmailAddress,
+                PhoneNumber = participant.PhoneNumber,
+                Address = participant.Address
+            };
+            return View("Edit", model);
+        }
+
+        [HttpPost()]
+        public async Task<IActionResult> Edit(EditParticipantViewModel data)
+        {
+
+            var participant = await _context.Participants.FindAsync(data.Id);
+
+            participant.FirstName = data.FirstName;
+            participant.LastName = data.LastName;
+            participant.EmailAddress = data.EmailAddress;
+            participant.PhoneNumber = data.PhoneNumber;
+            participant.Address = data.Address;
+
+            _context.Participants.Update(participant);
+            var result = await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+        
+        public async Task<IActionResult> Delete (int id)
+        {
+            return Content($"Detta är kursens detaljer {id}");
+        }
+
     }
 }
