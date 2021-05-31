@@ -1,23 +1,18 @@
-using System;
-using System.Linq;
 using System.Threading.Tasks;
-using App.Data;
 using App.Entities;
+using App.Interfaces;
 using App.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace App.Controllers
 {
     
     public class CoursesController : Controller
     {
-        private readonly DataContext _context;
-
-        public CoursesController(DataContext context)
+        private readonly IUnitOfWork _unitOfWork;
+        public CoursesController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         //Action metod..
@@ -25,7 +20,7 @@ namespace App.Controllers
         [HttpGet()] 
         public async Task<IActionResult> Index()
         {
-            var result = await _context.Courses.ToListAsync();
+            var result = await _unitOfWork.CourseRepository.GetCourseAsync();
             return View("Index", result);       
         }
 
@@ -58,17 +53,17 @@ namespace App.Controllers
             };
 
             //placerar nu min entitet till EF ChangeTracking
-            _context.Courses.Add(course);
+            _unitOfWork.CourseRepository.Add(course);
             //Nu sparas det till databasen
-            var result = await _context.SaveChangesAsync();
-            //Komma till våra kurser
-            return RedirectToAction("Index");
+            if(await _unitOfWork.Complete()) return RedirectToAction("Index");
+
+            return View("Error");
         }
 
         [HttpGet()]
         public async Task<IActionResult> Edit(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var course = await _unitOfWork.CourseRepository.GetCourseByIdAsync(id);
             var model = new EditCourseViewModel{
                 Id = course.Id,
                 CourseComplexity = course.CourseComplexity,
@@ -81,14 +76,16 @@ namespace App.Controllers
         [HttpPost()]
         public async Task<IActionResult> Edit(EditCourseViewModel data)
         {
-            var course = await _context.Courses.FindAsync(data.Id);
+            var course = await _unitOfWork.CourseRepository.GetCourseByIdAsync(data.Id);
 
             course.CourseComplexity = data.CourseComplexity;
             course.CourseStatus = data.CourseStatus;
 
-            _context.Courses.Update(course);
-            var result = await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            _unitOfWork.CourseRepository.Update(course);
+
+            if(await _unitOfWork.Complete()) return RedirectToAction("Index");
+
+            return RedirectToAction("Error");
         }
 
         public async Task<IActionResult> Details (int id)
@@ -98,7 +95,12 @@ namespace App.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            return Content($"Detta är kursens detaljer {id}");
+            var course = await _unitOfWork.CourseRepository.GetCourseByIdAsync(id);
+
+            _unitOfWork.CourseRepository.Delete(course);
+
+            if(await _unitOfWork.Complete()) return RedirectToAction("Index");
+            return View("Error");
         }
     }
 }

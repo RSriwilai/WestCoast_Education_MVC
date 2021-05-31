@@ -1,57 +1,57 @@
-using System;
-using System.Linq;
 using System.Threading.Tasks;
-using App.Data;
 using App.Entities;
+using App.Interfaces;
 using App.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace App.Controllers
 {
     public class ParticipantsController : Controller
     {
-        private readonly DataContext _context;
-
-        public ParticipantsController(DataContext context)
+        private readonly IUnitOfWork _unitOfWork;
+        public ParticipantsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IActionResult> Index()
         {
-            var result = await _context.Participants.ToListAsync();
+            var result = await _unitOfWork.ParticipantRepository.GetParticipantAsync();
             return View("index", result);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var model = new ParticipantViewModel();
-            return View("Create", model);
+            var list = await _unitOfWork.CourseNameRepository.GetCourseNameAsync();
+            return View("Create");
         }
 
         [HttpPost()]
         public async Task<IActionResult> Create(ParticipantViewModel data)
         {
-            if(!ModelState.IsValid) return View("Create", data);
+            if (!ModelState.IsValid) return View("Create", data);
 
-            var participant = new Participant {
+            var participant = new Participant
+            {
                 FirstName = data.FirstName,
                 LastName = data.LastName,
                 EmailAddress = data.EmailAddress,
                 PhoneNumber = (int)data.PhoneNumber,
                 Address = data.Address
             };
-            _context.Participants.Add(participant);
-            var result = await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            _unitOfWork.ParticipantRepository.Add(participant);
+
+            if (await _unitOfWork.Complete()) return RedirectToAction("Index");
+
+            return View("Error");
         }
 
         [HttpGet()]
         public async Task<IActionResult> Edit(int id)
         {
-            var participant = await _context.Participants.FindAsync(id);
-                var model = new EditParticipantViewModel{
+            var participant = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(id);
+            var model = new EditParticipantViewModel
+            {
                 Id = participant.Id,
                 FirstName = participant.FirstName,
                 LastName = participant.LastName,
@@ -66,7 +66,7 @@ namespace App.Controllers
         public async Task<IActionResult> Edit(EditParticipantViewModel data)
         {
 
-            var participant = await _context.Participants.FindAsync(data.Id);
+            var participant = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(data.Id);
 
             participant.FirstName = data.FirstName;
             participant.LastName = data.LastName;
@@ -74,15 +74,22 @@ namespace App.Controllers
             participant.PhoneNumber = data.PhoneNumber;
             participant.Address = data.Address;
 
-            _context.Participants.Update(participant);
-            var result = await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            _unitOfWork.ParticipantRepository.Update(participant);
+
+            if (await _unitOfWork.Complete()) return RedirectToAction("Index");
+
+            return RedirectToAction("Error"); ;
         }
 
-        
-        public async Task<IActionResult> Delete (int id)
+
+        public async Task<IActionResult> Delete(int id)
         {
-            return Content($"Detta är kursens detaljer {id}");
+            var participant = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(id);
+
+            _unitOfWork.ParticipantRepository.Delete(participant);
+
+            if (await _unitOfWork.Complete()) return RedirectToAction("Index");
+            return View("Error");
         }
 
     }
