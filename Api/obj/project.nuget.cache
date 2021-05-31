@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "brvZglGQeEYLNJ5qYqCJ8PvNBMP5NmFb5l98/k+NQOxsP8IpYPjkaasd9ediYnTohnyBUjHD4zTdvuM3emBbQA==",
+  "dgSpecHash": "tzvcI/u6cGOtph/GEQCKPMu+CJ463kgzHPWYVuTidDq5ErZoQ8NSweuWSzDoe5IipNBxtFcOWWmYuR17l5XgRg==",
   "success": true,
-  "projectFilePath": "c:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Backend\\westcoast_education_mvc_app\\Api\\Api.csproj",
+  "projectFilePath": "C:\\Users\\duk15\\OneDrive\\Skrivbord\\Learn Programming\\Learn Backend\\WestCoast_Education_MVC_App\\Api\\Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\duk15\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\duk15\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
