@@ -1,6 +1,10 @@
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using App.Entities;
 using App.Interfaces;
+using App.Models;
 using App.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,8 +24,27 @@ namespace App.Controllers
         [HttpGet()] 
         public async Task<IActionResult> Index()
         {
-            var result = await _unitOfWork.CourseRepository.GetCourseAsync();
-            return View("Index", result);       
+
+
+            using var client = new HttpClient();
+
+            //Utnyttja RestAPI
+            var response = await client.GetAsync("https://localhost:5001/api/courses");
+            
+            if(response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<List<CourseModel>>(data, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                return View("Index", result); 
+            }
+
+            // var result = await _unitOfWork.CourseRepository.GetCourseAsync();
+            return View("Index");
+                  
         }
 
 
