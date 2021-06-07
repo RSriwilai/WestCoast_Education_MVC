@@ -88,11 +88,6 @@ namespace App.Controllers
             return RedirectToAction("Error");
         }
 
-        public async Task<IActionResult> Details (int id)
-        {
-            return Content($"Detta är kursens detaljer {id}");
-        }
-
         public async Task<IActionResult> Delete(int id)
         {
             var course = await _unitOfWork.CourseRepository.GetCourseByIdAsync(id);

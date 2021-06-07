@@ -1,4 +1,4 @@
-using App.Entities;
+using Api.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Data
@@ -10,6 +10,11 @@ namespace Api.Data
         public DbSet<CourseName> CourseNames { get; set; }
         public DataContext(DbContextOptions options) : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

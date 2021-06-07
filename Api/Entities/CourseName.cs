@@ -1,4 +1,4 @@
-namespace App.Entities
+namespace Api.Entities
 {
     public class CourseName
     {
