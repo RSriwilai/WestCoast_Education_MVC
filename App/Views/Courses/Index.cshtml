@@ -13,7 +13,7 @@
         <tr>
             <th></th>
             <th>Kursnummer</th>
-            <th>KursTitel</th>
+            <th>Kurstitel</th>
             <th>Kursbeskrivning</th>
             <th>Kurslängd</th>
             <th>Nivå</th>
@@ -34,7 +34,7 @@
                 <td>@item.CourseLength</td>
                 <td>@item.CourseComplexity</td>
                 <td>@item.CourseStatus</td>
-                <th style="text-align: center;"><a asp-action="Details" asp-route-CourseNo="@item.CourseNumber"><i class="fas fa-info-circle">i</i></a></th>
+                <th style="text-align: center;"><a asp-action="Details" asp-route-courseNo="@item.CourseNumber"><i class="fas fa-info-circle">i</i></a></th>
             </tr>
         }
     </tbody>

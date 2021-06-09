@@ -13,31 +13,17 @@ namespace App.Controllers
     public class ParticipantsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ParticipantsController(IUnitOfWork unitOfWork)
+        private readonly ICourseService _service;
+        public ParticipantsController(IUnitOfWork unitOfWork, ICourseService service)
         {
+            _service = service;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<IActionResult> Index()
         {
-            using var client = new HttpClient();
-
-            //Utnyttja RestAPI
-            var response = await client.GetAsync("https://localhost:5001/api/participants");
-            
-            if(response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<List<ParticipantModel>>(data, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-
-                return View("Index", result); 
-            }
-
-            // var result = await _unitOfWork.CourseRepository.GetCourseAsync();
-            return View("Index");
+            var result = await _service.GetCParticipantsAsync();
+            return View("Index", result);
         }
 
         public async Task<IActionResult> Create()
@@ -51,7 +37,7 @@ namespace App.Controllers
         {
             if (!ModelState.IsValid) return View("Create", data);
 
-            var participant = new Participant
+            var participant = new ParticipantModel
             {
                 FirstName = data.FirstName,
                 LastName = data.LastName,
@@ -59,9 +45,14 @@ namespace App.Controllers
                 PhoneNumber = (int)data.PhoneNumber,
                 Address = data.Address
             };
-            _unitOfWork.ParticipantRepository.Add(participant);
-
-            if (await _unitOfWork.Complete()) return RedirectToAction("Index");
+            try
+            {
+                if(await _service.AddParticipant(participant)) return RedirectToAction("Index");
+            }
+            catch (System.Exception)
+            {
+                return View("Error");
+            }
 
             return View("Error");
         }
@@ -69,7 +60,7 @@ namespace App.Controllers
         [HttpGet()]
         public async Task<IActionResult> Edit(int id)
         {
-            var participant = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(id);
+            var participant = await _service.GetParticipantAsync(id);
             var model = new EditParticipantViewModel
             {
                 Id = participant.Id,
@@ -85,30 +76,41 @@ namespace App.Controllers
         [HttpPost()]
         public async Task<IActionResult> Edit(EditParticipantViewModel data)
         {
+            try
+            {
+                var participant = await _service.GetParticipantAsync(data.Id);
 
-            var participant = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(data.Id);
+                var participantModel = new UpdateParticipantViewModel
+                {
+                    FirstName = data.FirstName,
+                    LastName = data.LastName,
+                    EmailAddress = data.EmailAddress,
+                    PhoneNumber = data.PhoneNumber,
+                    Address = data.Address
+                };
 
-            participant.FirstName = data.FirstName;
-            participant.LastName = data.LastName;
-            participant.EmailAddress = data.EmailAddress;
-            participant.PhoneNumber = data.PhoneNumber;
-            participant.Address = data.Address;
+                if (await _service.UpdateParticipant(data.Id, participantModel)) return RedirectToAction("Index");
 
-            _unitOfWork.ParticipantRepository.Update(participant);
-
-            if (await _unitOfWork.Complete()) return RedirectToAction("Index");
-
-            return RedirectToAction("Error"); ;
+                return RedirectToAction("Error");
+            }
+            catch (System.Exception)
+            {
+                return View("Error");                
+            }
         }
 
-
-        public async Task<IActionResult> Delete(int id)
+        // [HttpGet("find/{email}")]
+        public async Task<IActionResult> Details(string email)
         {
-            var participant = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(id);
+            var result = await _service.GetParticipantByEmailAsync(email);
+            if(result != null) return Content($"Detta är detaljer på deltagare: {email}");
 
-            _unitOfWork.ParticipantRepository.Delete(participant);
+            return Content($"Kunde inte hitta kursen med email: {email}");
+        }
 
-            if (await _unitOfWork.Complete()) return RedirectToAction("Index");
+        public async Task<IActionResult> Delete(string email)
+        {
+            if (await _service.DeleteParticipant(email)) return RedirectToAction("Index");
             return View("Error");
         }
 

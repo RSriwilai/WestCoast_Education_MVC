@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using App.Data;
 using App.Interfaces;
+using App.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,9 +32,12 @@ namespace App
             {
                 options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
             });
-
+            services.AddScoped<ICourseService, CourseService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddControllersWithViews();
+            // services.AddHttpClient<ICourseRepository, CourseRepository>();
+            // services.AddHttpClient<IParticipantRepository, ParticipantRepository>();
+            services.AddHttpClient<ICourseService, CourseService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

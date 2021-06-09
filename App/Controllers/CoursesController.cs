@@ -10,41 +10,25 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace App.Controllers
 {
-    
+
     public class CoursesController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CoursesController(IUnitOfWork unitOfWork)
+        private readonly ICourseService _services;
+        public CoursesController(IUnitOfWork unitOfWork, ICourseService services)
         {
+            _services = services;
             _unitOfWork = unitOfWork;
         }
 
         //Action metod..
 
-        [HttpGet()] 
+        [HttpGet()]
         public async Task<IActionResult> Index()
         {
+            var result = await _services.GetCoursesAsync();
+            return View("Index", result);
 
-
-            using var client = new HttpClient();
-
-            //Utnyttja RestAPI
-            var response = await client.GetAsync("https://localhost:5001/api/courses");
-            
-            if(response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<List<CourseModel>>(data, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-
-                return View("Index", result); 
-            }
-
-            // var result = await _unitOfWork.CourseRepository.GetCourseAsync();
-            return View("Index");
-                  
         }
 
 
@@ -61,12 +45,10 @@ namespace App.Controllers
         public async Task<IActionResult> Create(CourseViewModel data)
         {
 
-            //Steg 5. Spara till databasen(SQLite)
-            //Manuellt mappa viewmodel till entitet
-            if(!ModelState.IsValid) return View("Create", data);
-            
+            if (!ModelState.IsValid) return View("Create", data);
 
-            var course = new Course {
+            var course = new CourseModel
+            {
                 CourseNumber = (int)data.CourseNumber,
                 CourseTitle = data.CourseTitle,
                 CourseDescription = data.CourseDescription,
@@ -75,19 +57,31 @@ namespace App.Controllers
                 CourseStatus = data.CourseStatus
             };
 
-            //placerar nu min entitet till EF ChangeTracking
-            _unitOfWork.CourseRepository.Add(course);
-            //Nu sparas det till databasen
-            if(await _unitOfWork.Complete()) return RedirectToAction("Index");
-
+            try
+            {
+                if(await _services.AddCourse(course)) return RedirectToAction("Index");                
+            }
+            catch (System.Exception)
+            {
+                return View("Error");
+            }
             return View("Error");
+
+
+
+            // _unitOfWork.CourseRepository.Add(course);
+            // //Nu sparas det till databasen
+            // if(await _unitOfWork.Complete()) return RedirectToAction("Index");
+
+            // return View("Error");
         }
 
         [HttpGet()]
         public async Task<IActionResult> Edit(int id)
         {
-            var course = await _unitOfWork.CourseRepository.GetCourseByIdAsync(id);
-            var model = new EditCourseViewModel{
+            var course = await _services.GetCourseAsync(id);
+            var model = new EditCourseViewModel
+            {
                 Id = course.Id,
                 CourseComplexity = course.CourseComplexity,
                 CourseStatus = course.CourseStatus
@@ -99,25 +93,39 @@ namespace App.Controllers
         [HttpPost()]
         public async Task<IActionResult> Edit(EditCourseViewModel data)
         {
-            var course = await _unitOfWork.CourseRepository.GetCourseByIdAsync(data.Id);
+            try
+            {
+                var course = await _services.GetCourseAsync(data.Id);
 
-            course.CourseComplexity = data.CourseComplexity;
-            course.CourseStatus = data.CourseStatus;
+                var courseModel = new UpdateCourseViewModel
+                {
+                  CourseComplexity = data.CourseComplexity,
+                  CourseStatus = data.CourseStatus
+                };
 
-            _unitOfWork.CourseRepository.Update(course);
+                if (await _services.UpdateCourse(data.Id, courseModel)) return RedirectToAction("Index");
 
-            if(await _unitOfWork.Complete()) return RedirectToAction("Index");
-
-            return RedirectToAction("Error");
+                return RedirectToAction("Error");
+            }
+            catch (System.Exception)
+            {
+                return View("Error");                
+            }
         }
 
-        public async Task<IActionResult> Delete(int id)
+
+        // [HttpGet("find/{courseNo}")]
+        public async Task<IActionResult> Details(int courseNo)
         {
-            var course = await _unitOfWork.CourseRepository.GetCourseByIdAsync(id);
+            var result = await _services.GetCourseByNoAsync(courseNo);
+            if(result != null) return Content($"Detta är detaljer på kursen: {courseNo}");
 
-            _unitOfWork.CourseRepository.Delete(course);
+            return Content($"Kunde inte hitta kursen med kursnummer: {courseNo}");
+        }
 
-            if(await _unitOfWork.Complete()) return RedirectToAction("Index");
+        public async Task<IActionResult> Delete(int courseNo)
+        {
+            if (await _services.DeleteCourse(courseNo)) return RedirectToAction("Index");
             return View("Error");
         }
     }

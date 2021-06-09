@@ -30,7 +30,7 @@
                 <td>@item.EmailAddress</td>
                 <td>@item.PhoneNumber</td>
                 <td>@item.Address</td>
-                <th style="text-align: center;"><a asp-action="" asp-route-regNo="@item.FirstName"><i class="fas fa-info-circle">i</i></a></th>
+                <th style="text-align: center;"><a asp-action="Details" asp-route-email="@item.EmailAddress"><i class="fas fa-info-circle">i</i></a></th>
             </tr>
         }
     </tbody>
