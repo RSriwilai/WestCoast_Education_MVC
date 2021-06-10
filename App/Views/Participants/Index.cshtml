@@ -18,6 +18,7 @@
             <th>Mobilnummer</th>
             <th>Adressuppgifter</th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -30,6 +31,8 @@
                 <td>@item.EmailAddress</td>
                 <td>@item.PhoneNumber</td>
                 <td>@item.Address</td>
+                <th style="text-align: center;"><a asp-action="Delete" asp-route-email="@item.EmailAddress"><i style="color: red;" class="fas fa-info-circle">x</i></a></th>
+                
                 <th style="text-align: center;"><a asp-action="Details" asp-route-email="@item.EmailAddress"><i class="fas fa-info-circle">i</i></a></th>
             </tr>
         }

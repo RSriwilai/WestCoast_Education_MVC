@@ -128,7 +128,7 @@ namespace App.Services
         {
             try
             {
-                var url = $"{_baseUrl}{courseNo}";
+                var url = $"{_baseUrl}courses/{courseNo}";
                 var response = await _http.DeleteAsync(url);
 
                 if (response.IsSuccessStatusCode)
@@ -250,7 +250,7 @@ namespace App.Services
         {
             try
             {
-                var url = $"{_baseUrl}{email}";
+                var url = $"{_baseUrl}participants/{email}";
                 var response = await _http.DeleteAsync(url);
 
                 if (response.IsSuccessStatusCode)
