@@ -42,6 +42,11 @@ namespace Api.Data
             return await _context.Courses.FindAsync(id);
         }
 
+        public async Task<Course> GetCourseNameAsync(string name)
+        {
+            return await _context.Courses.SingleOrDefaultAsync(c => c.CourseTitle.ToLower() == name.ToLower());
+        }
+
         public async Task<bool> SaveAllChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;

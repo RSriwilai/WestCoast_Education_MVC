@@ -6,11 +6,6 @@ namespace Api.Interfaces
 {
     public interface ICourseNameRepository
     {
-        
-        Task Add(CourseName courseName);
-
-        Task<IEnumerable<CourseName>> GetCourseNameAsync();
-
-        Task<bool> SaveAllChanges();
+        Task<CourseName> GetCourseNameAsync(string name);
     }
 }

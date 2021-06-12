@@ -27,20 +27,22 @@ namespace Api.Data
 
         public async Task<IEnumerable<Participant>> GetParticipantAsync()
         {
-            return await _context.Participants.ToListAsync();
+            // return await _context.Participants.ToListAsync();
+            return await _context.Participants.Include(c => c.Course).ToListAsync();
         }
 
         public async Task<Participant> GetParticipantByEmailAsync(string participantEmail)
         {
-            var participant = await _context.Participants.SingleOrDefaultAsync(c => c.EmailAddress.ToLower() == participantEmail.ToLower());
-
+            var participant = await _context.Participants.Include(c => c.Course).SingleOrDefaultAsync(c => c.EmailAddress.ToLower() == participantEmail.ToLower());
 
             return participant;
+    
         }
 
         public async Task<Participant> GetParticipantByIdAsync(int id)
         {
-            return await _context.Participants.FindAsync(id);
+            // return await _context.Participants.FindAsync(id);
+            return await _context.Participants.Include(c => c.Course).SingleOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<bool> SaveAllChangesAsync()

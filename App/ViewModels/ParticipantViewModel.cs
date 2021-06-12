@@ -14,8 +14,13 @@ namespace App.ViewModels
         
         public string LastName {get; set;}
 
+        [Display(Name = "Kurs titel")]
+        [Required(ErrorMessage = "Du måste ange de aktuella kurser som finns i databasen")]
+        public string CourseTitle {get; set;}
+
         [Display(Name = "E-post")] 
         [Required(ErrorMessage = "Du måste ange E-post")]
+
         public string EmailAddress {get; set;}
 
         [Display(Name = "Mobilnummer")]

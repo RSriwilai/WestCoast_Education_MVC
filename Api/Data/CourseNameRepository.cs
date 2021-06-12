@@ -14,19 +14,10 @@ namespace Api.Data
         {
             _context = context;
         }
-        public async Task Add(CourseName courseName)
-        {
-            await _context.CourseNames.AddAsync(courseName);
-        }
 
-        public async Task<IEnumerable<CourseName>> GetCourseNameAsync()
+        public async Task<CourseName> GetCourseNameAsync(string name)
         {
-            return await _context.CourseNames.ToListAsync();
-        }
-
-        public async Task<bool> SaveAllChanges()
-        {
-            return await _context.SaveChangesAsync() > 0;
+            return await _context.CourseNames.SingleOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
         }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210607094127_InitialCreate")]
+    [Migration("20210612203227_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,6 +69,9 @@ namespace Api.Data.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("CourseId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("EmailAddress")
                         .HasColumnType("TEXT");
 
@@ -83,7 +86,25 @@ namespace Api.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CourseId");
+
                     b.ToTable("Participants");
+                });
+
+            modelBuilder.Entity("Api.Entities.Participant", b =>
+                {
+                    b.HasOne("Api.Entities.Course", "Course")
+                        .WithMany("Participants")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("Api.Entities.Course", b =>
+                {
+                    b.Navigation("Participants");
                 });
 #pragma warning restore 612, 618
         }

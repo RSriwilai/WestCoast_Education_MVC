@@ -14,6 +14,7 @@
             <th></th>
             <th>Förnamn</th>
             <th>Efternamn</th>
+            <th>KursTitel</th>
             <th>E-post</th>
             <th>Mobilnummer</th>
             <th>Adressuppgifter</th>
@@ -28,6 +29,7 @@
                 <td style="text-align:center;"><a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Ändra</a></td>
                 <td>@item.FirstName</td>
                 <td>@item.LastName</td>
+                <td>@item.CourseTitle</td>
                 <td>@item.EmailAddress</td>
                 <td>@item.PhoneNumber</td>
                 <td>@item.Address</td>

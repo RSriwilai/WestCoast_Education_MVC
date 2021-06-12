@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-
-namespace Api.Entities
+namespace Api.ViewModels
 {
-    public class Course
+    public class CourseViewModel
     {
         public int Id { get; set; }
         public int CourseNumber { get; set; }
@@ -11,7 +9,5 @@ namespace Api.Entities
         public int CourseLength { get; set; }
         public string CourseComplexity { get; set; }
         public string CourseStatus { get; set; }
-
-       public virtual ICollection<Participant> Participants {get; set;}
     }
 }

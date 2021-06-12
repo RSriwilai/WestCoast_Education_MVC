@@ -41,6 +41,7 @@ namespace App.Controllers
             {
                 FirstName = data.FirstName,
                 LastName = data.LastName,
+                CourseTitle = data.CourseTitle,
                 EmailAddress = data.EmailAddress,
                 PhoneNumber = (int)data.PhoneNumber,
                 Address = data.Address

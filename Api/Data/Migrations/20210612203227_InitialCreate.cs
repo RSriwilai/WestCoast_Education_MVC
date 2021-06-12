@@ -45,6 +45,7 @@ namespace Api.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     FirstName = table.Column<string>(type: "TEXT", nullable: true),
                     LastName = table.Column<string>(type: "TEXT", nullable: true),
+                    CourseId = table.Column<int>(type: "INTEGER", nullable: false),
                     EmailAddress = table.Column<string>(type: "TEXT", nullable: true),
                     PhoneNumber = table.Column<int>(type: "INTEGER", nullable: false),
                     Address = table.Column<string>(type: "TEXT", nullable: true)
@@ -52,7 +53,18 @@ namespace Api.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Participants", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Participants_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Participants_CourseId",
+                table: "Participants",
+                column: "CourseId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -61,10 +73,10 @@ namespace Api.Data.Migrations
                 name: "CourseNames");
 
             migrationBuilder.DropTable(
-                name: "Courses");
+                name: "Participants");
 
             migrationBuilder.DropTable(
-                name: "Participants");
+                name: "Courses");
         }
     }
 }
